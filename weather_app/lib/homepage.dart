@@ -35,15 +35,15 @@ class _HomePageState extends State<HomePage> {
                 child: TextField(
                   controller: _searchController,
                   inputFormatters: [LengthLimitingTextInputFormatter(30)],
-                  onChanged: (value) {
-                    setState(() {
-                      _searchQuery = value;
-                    });
-                  },
                   decoration: InputDecoration(
                     hintText: 'Search city',
                     border: InputBorder.none,
                   ),
+                   onChanged: (value) {
+                    setState(() {
+                      _searchQuery = value;
+                    });
+                  },
                 ),
               ),
             ],
@@ -52,9 +52,8 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.my_location),
               onPressed: () {
-                const locationQuery = 'geolocation';
                 setState(() {
-                  _searchQuery = locationQuery;
+                  _searchQuery = 'geolocation';
                 });
               },
             ),
@@ -67,7 +66,7 @@ class _HomePageState extends State<HomePage> {
             Weekly(searchQuery: _searchQuery),
           ],
         ),
-        bottomNavigationBar: TabBar(
+        bottomNavigationBar: const TabBar(
           tabs: [
             Tab(icon: Icon(Icons.cloud), text: 'Currently'),
             Tab(icon: Icon(Icons.today), text: 'Today'),
