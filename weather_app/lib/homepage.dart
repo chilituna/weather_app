@@ -58,14 +58,12 @@ class _HomePageState extends State<HomePage> {
     try {
       final results = await GeocodingService().searchCity(query);
       if (query != _lastQuery) return;
-      debugPrint('Search results for "$query": ${results.length} found');
       setState(() {
         _searchResults = results;
       });
     } catch (e) {
       setState(() {
         _searchResults = [];
-        debugPrint('Error searching for city "$query": $e');
         _locationError = _toUserMessage(e);
       });
     }
@@ -101,9 +99,6 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final weather = await WeatherService().getWeather(city.lat, city.lon);
-      debugPrint(
-        'Fetched weather data for ${city.city}, ${city.region}, ${city.country}',
-      );
 
       setState(() {
         _locationData = city;
@@ -113,7 +108,6 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       setState(() {
-        debugPrint('Error fetching weather data: $e');
         _locationError = _toUserMessage(e);
       });
     }
@@ -127,22 +121,15 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final position = await LocationService().getCurrentLocation();
-      debugPrint(
-        'Fetched coordinates: lat=${position.latitude}, lon=${position.longitude}',
-      );
       final locationData = await GeocodingService().getLocationData(
         position.latitude,
         position.longitude,
-      );
-      debugPrint(
-        'Resolved location: ${locationData.city}, ${locationData.region}, ${locationData.country}',
       );
 
       final weatherData = await WeatherService().getWeather(
         position.latitude,
         position.longitude,
       );
-      debugPrint('Fetched weather data for ${locationData.city}');
 
       setState(() {
         _locationData = locationData;
@@ -154,7 +141,6 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         _locationError =
             '${_toUserMessage(e)}\n\nUse the search bar to find a city.';
-        debugPrint('Error fetching location or weather data: $e');
       });
     }
   }
@@ -187,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                   controller: _searchController,
                   inputFormatters: [LengthLimitingTextInputFormatter(30)],
                   decoration: InputDecoration(
-                    hintText: 'Search city',
+                    hintText: 'Search location',
                     border: InputBorder.none,
                   ),
                   onChanged: (value) {
@@ -212,9 +198,18 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(icon: Icon(Icons.my_location), onPressed: _getLocation),
           ],
+          backgroundColor: const Color.fromARGB(220, 52, 221, 199),
         ),
         body: Stack(
           children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: Opacity(
+                  opacity: 0.7,
+                  child: Image.asset('lib/assets/bg.png', fit: BoxFit.cover),
+                ),
+              ),
+            ),
             if (_locationError != null)
               Center(
                 child: Padding(
