@@ -1,32 +1,45 @@
 import 'package:flutter/material.dart';
+import '../models/current_weather.dart';
+import '../models/location.dart';
+import '../utils/weather_utils.dart';
 
 class Currently extends StatelessWidget {
-  const Currently({super.key, required this.searchQuery});
+  final LocationData? locationData;
+  final CurrentWeather? currentWeather;
 
-  final String searchQuery;
+
+  const Currently({super.key, required this.currentWeather, required this.locationData});
+
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Column(
           children: [
+            const SizedBox(height: 16),
             Text(
               'Current Weather',
-              style: TextStyle(fontSize: 24, color: Colors.white),
+              style: TextStyle(fontSize: 24),
             ),
-            if (searchQuery.trim().isNotEmpty) ...[
-              SizedBox(height: 8),
+            if (locationData != null) ...[
+              const SizedBox(height: 8),
+              Text(locationData!.city),
+              Text('${locationData!.region}, ${locationData!.country}'),
+            ],
+
+        const SizedBox(height: 16),
+            if (currentWeather != null) ...[
+              SizedBox(height: 16),
               Text(
-                searchQuery,
-                style: TextStyle(fontSize: 20, color: Colors.white),
+                '${currentWeather!.temperature}°C',
+              ),
+              Text(
+                getWeatherDescription(currentWeather!.weatherCode),
+              ),
+              Text(
+                'Wind Speed: ${currentWeather!.windSpeed} km/h',
               ),
             ],
           ],
-        ),
-      ),
-    );
+        );
   }
 }
