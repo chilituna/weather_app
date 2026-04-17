@@ -140,8 +140,15 @@ class _HomePageState extends State<HomePage> {
       });
     } catch (e) {
       setState(() {
-        _locationError =
-            '${_toUserMessage(e)}\n\nUse the search bar to find a city.';
+        final message = _toUserMessage(e);
+        final errorStr = e.toString().toLowerCase();
+        // Only append search suggestion for location permission errors
+        if (errorStr.contains('permission') ||
+            errorStr.contains('location services are disabled')) {
+          _locationError = '$message\n\nUse the search bar to find a city.';
+        } else {
+          _locationError = message;
+        }
       });
     }
   }
@@ -213,9 +220,7 @@ class _HomePageState extends State<HomePage> {
             ),
             BackdropFilter(
               filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-              child: Container(
-                color: Colors.black.withOpacity(0.5),
-              ),
+              child: Container(color: Colors.black.withOpacity(0.5)),
             ),
             if (_locationError != null)
               Center(
@@ -255,10 +260,8 @@ class _HomePageState extends State<HomePage> {
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: _searchResults.length,
-                    separatorBuilder: (context, index) => const Divider(
-                      height: 1,
-                      color: Colors.orangeAccent,
-                    ),
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1, color: Colors.orangeAccent),
                     itemBuilder: (context, index) {
                       final city = _searchResults[index];
 

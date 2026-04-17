@@ -99,7 +99,7 @@ class PartlyCloudyIcon extends StatelessWidget {
             right: 0,
             child: Icon(
               Icons.cloud,
-              color: Colors.lightBlue,
+              color: const Color.fromARGB(255, 182, 213, 228),
               size: size * 0.75,
             ),
           ),
@@ -116,7 +116,7 @@ Widget getWeatherIcon(int weatherCode, {double size = 32}) {
   } else if (weatherCode >= 1 && weatherCode <= 2) {
     return PartlyCloudyIcon(size: size); // ✅ now valid
   } else if (weatherCode == 3) {
-    return Icon(Icons.cloud, size: size, color: Colors.lightBlue);
+    return Icon(Icons.cloud, size: size, color: const Color.fromARGB(255, 160, 202, 221));
   } else if (weatherCode == 45 || weatherCode == 48) {
     return Icon(Icons.foggy, size: size, color: Colors.grey);
   } else if ((weatherCode >= 51 && weatherCode <= 67) ||
@@ -131,23 +131,4 @@ Widget getWeatherIcon(int weatherCode, {double size = 32}) {
     return Icon(Icons.help_outline, size: size);
   }
 }
-
-Color getWeatherIconColor(int weatherCode) {
-  if (weatherCode == 0) {
-    return Colors.amber;
-  } else if (weatherCode >= 1 && weatherCode <= 3) {
-    return Colors.blueGrey;
-  } else if (weatherCode == 45 || weatherCode == 48) {
-    return Colors.grey;
-  } else if ((weatherCode >= 51 && weatherCode <= 67) ||
-      (weatherCode >= 80 && weatherCode <= 82)) {
-    return Colors.blue;
-  } else if ((weatherCode >= 71 && weatherCode <= 77) ||
-      (weatherCode >= 85 && weatherCode <= 86)) {
-    return Colors.lightBlueAccent;
-  } else if (weatherCode == 95 || weatherCode == 96 || weatherCode == 99) {
-    return Colors.yellow.shade700;
-  } else {
-    return Colors.white70;
-  }
-}
+  

@@ -19,12 +19,12 @@ class Currently extends StatelessWidget {
     return SafeArea(
       child: currentWeather == null
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Center(
+          : Center(
+              child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // Location
                       if (locationData != null) ...[
