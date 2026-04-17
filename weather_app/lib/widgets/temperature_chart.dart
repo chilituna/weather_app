@@ -174,68 +174,70 @@ class _TemperatureChartState extends State<TemperatureChart> {
                 const SizedBox(height: 12),
                 Expanded(
                   child: RepaintBoundary(
-                    child: LineChart(
-                      LineChartData(
-                        minX: 0,
-                        maxX: _cachedMaxX,
-                        minY: _cachedMinY,
-                        maxY: _cachedMaxY,
-                        gridData: FlGridData(
-                          show: true,
-                          horizontalInterval: _yAxisInterval,
-                        ),
-                        borderData: FlBorderData(show: false),
+                    child: IgnorePointer(
+                      child: LineChart(
+                        LineChartData(
+                          minX: 0,
+                          maxX: _cachedMaxX,
+                          minY: _cachedMinY,
+                          maxY: _cachedMaxY,
+                          gridData: FlGridData(
+                            show: true,
+                            horizontalInterval: _yAxisInterval,
+                          ),
+                          borderData: FlBorderData(show: false),
 
-                        titlesData: FlTitlesData(
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              interval: 3,
-                              getTitlesWidget: (value, meta) {
-                                final index = value.toInt();
-                                if (index < 0 || index >= hours.length) {
-                                  return const SizedBox();
-                                }
+                          titlesData: FlTitlesData(
+                            bottomTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                interval: 3,
+                                getTitlesWidget: (value, meta) {
+                                  final index = value.toInt();
+                                  if (index < 0 || index >= hours.length) {
+                                    return const SizedBox();
+                                  }
 
-                                final hour = hours[index].time.hour;
+                                  final hour = hours[index].time.hour;
 
-                                return Text(
-                                  '${hour.toString().padLeft(2, '0')}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 10,
-                                  ),
-                                );
-                              },
+                                  return Text(
+                                    '${hour.toString().padLeft(2, '0')}',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+
+                            leftTitles: AxisTitles(
+                              sideTitles: SideTitles(
+                                showTitles: true,
+                                interval: _yAxisInterval,
+                                reservedSize: 34,
+                                getTitlesWidget: (value, meta) {
+                                  return Text(
+                                    '${value.toInt()}°',
+                                    style: const TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 10,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+
+                            topTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+
+                            rightTitles: AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
-
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              interval: _yAxisInterval,
-                              reservedSize: 34,
-                              getTitlesWidget: (value, meta) {
-                                return Text(
-                                  '${value.toInt()}°',
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 10,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-
-                          topTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
-
-                          rightTitles: AxisTitles(
-                            sideTitles: SideTitles(showTitles: false),
-                          ),
+                          lineBarsData: _cachedBars,
                         ),
-                        lineBarsData: _cachedBars,
                       ),
                     ),
                   ),
