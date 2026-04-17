@@ -68,46 +68,17 @@ class TemperatureChart extends StatelessWidget {
       return colors.last;
     }
 
-    final List<LineChartBarData> bars = [];
+    final lineGradient = LinearGradient(
+      colors: [
+        getColorForTemp(rawMin),
+        getColorForTemp(rawMax),
+      ],
+    );
 
-    const stepsPerSegment = 5;
-
-    for (int i = 0; i < hours.length - 1; i++) {
-      final t1 = hours[i].temperature;
-      final t2 = hours[i + 1].temperature;
-
-      for (int s = 0; s < stepsPerSegment; s++) {
-        final t = s / stepsPerSegment;
-        final tNext = (s + 1) / stepsPerSegment;
-
-        // interpolate temperature
-        final tempA = t1 + (t2 - t1) * t;
-        final tempB = t1 + (t2 - t1) * tNext;
-
-        // interpolate X position
-        final xA = i + t;
-        final xB = i + tNext;
-
-        final colorA = getColorForTemp(tempA);
-        final colorB = getColorForTemp(tempB);
-
-        bars.add(
-          LineChartBarData(
-            spots: [
-              FlSpot(xA, tempA),
-              FlSpot(xB, tempB),
-            ],
-            isCurved: false,
-            barWidth: 3,
-            dotData: FlDotData(show: false),
-
-            gradient: LinearGradient(
-              colors: [colorA, colorB],
-            ),
-          ),
-        );
-      }
-    }
+    final lineSpots = List.generate(
+      hours.length,
+      (i) => FlSpot(i.toDouble(), hours[i].temperature),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -190,7 +161,16 @@ class TemperatureChart extends StatelessWidget {
                           sideTitles: SideTitles(showTitles: false),
                         ),
                       ),
-                      lineBarsData: bars,
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: lineSpots,
+                          isCurved: true,
+                          color: Colors.white,
+                          barWidth: 3,
+                          dotData: FlDotData(show: false),
+                          gradient: lineGradient,
+                        ),
+                      ],
                     ),
                   ),
                 ),
