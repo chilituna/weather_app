@@ -29,6 +29,86 @@ class TemperatureChart extends StatelessWidget {
     // Keep Y ticks predictable so each 2-degree step is printed.
     const yAxisInterval = 2.0;
 
+    Color getColorForTemp(double temp) {
+      // Define anchor points
+      final stops = [
+        -25.0,
+        -15.0,
+        -5.0,
+        5.0,
+        15.0,
+        25.0,
+        35.0,
+      ];
+
+      final colors = [
+        Colors.blue.shade900,
+        Colors.blue,
+        Colors.lightBlue,
+        Colors.amber,
+        Colors.orange,
+        Colors.red,
+        Colors.red.shade900,
+      ];
+
+      // Clamp temp into range
+      temp = temp.clamp(stops.first, stops.last);
+
+      // Find interval
+      for (int i = 0; i < stops.length - 1; i++) {
+        final t1 = stops[i];
+        final t2 = stops[i + 1];
+
+        if (temp >= t1 && temp <= t2) {
+          final ratio = (temp - t1) / (t2 - t1);
+          return Color.lerp(colors[i], colors[i + 1], ratio)!;
+        }
+      }
+
+      return colors.last;
+    }
+
+    final List<LineChartBarData> bars = [];
+
+    const stepsPerSegment = 5;
+
+    for (int i = 0; i < hours.length - 1; i++) {
+      final t1 = hours[i].temperature;
+      final t2 = hours[i + 1].temperature;
+
+      for (int s = 0; s < stepsPerSegment; s++) {
+        final t = s / stepsPerSegment;
+        final tNext = (s + 1) / stepsPerSegment;
+
+        // interpolate temperature
+        final tempA = t1 + (t2 - t1) * t;
+        final tempB = t1 + (t2 - t1) * tNext;
+
+        // interpolate X position
+        final xA = i + t;
+        final xB = i + tNext;
+
+        final colorA = getColorForTemp(tempA);
+        final colorB = getColorForTemp(tempB);
+
+        bars.add(
+          LineChartBarData(
+            spots: [
+              FlSpot(xA, tempA),
+              FlSpot(xB, tempB),
+            ],
+            isCurved: false,
+            barWidth: 3,
+            dotData: FlDotData(show: false),
+
+            gradient: LinearGradient(
+              colors: [colorA, colorB],
+            ),
+          ),
+        );
+      }
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -51,6 +131,8 @@ class TemperatureChart extends StatelessWidget {
                 Expanded(
                   child: LineChart(
                     LineChartData(
+                      minX: 0,
+                      maxX: (hours.length - 1).toDouble(),
                       minY: minY.toDouble(),
                       maxY: maxY.toDouble(),
                       gridData: FlGridData(
@@ -108,18 +190,7 @@ class TemperatureChart extends StatelessWidget {
                           sideTitles: SideTitles(showTitles: false),
                         ),
                       ),
-
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: List.generate(hours.length, (i) {
-                            return FlSpot(i.toDouble(), hours[i].temperature);
-                          }),
-                          isCurved: true,
-                          color: Colors.white,
-                          barWidth: 3,
-                          dotData: FlDotData(show: false),
-                        ),
-                      ],
+                      lineBarsData: bars,
                     ),
                   ),
                 ),
