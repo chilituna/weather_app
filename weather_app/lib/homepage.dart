@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' show ClientException;
 
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'tabs/currently.dart';
 import 'tabs/today.dart';
@@ -164,6 +165,9 @@ class _HomePageState extends State<HomePage> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          elevation: 10,
+          shadowColor: Colors.black.withOpacity(0.5),
+          surfaceTintColor: Colors.transparent,
           title: Row(
             children: [
               Icon(Icons.search),
@@ -198,16 +202,19 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(icon: Icon(Icons.my_location), onPressed: _getLocation),
           ],
-          backgroundColor: const Color.fromARGB(220, 52, 221, 199),
+          backgroundColor: const Color.fromARGB(255, 247, 179, 90),
         ),
         body: Stack(
           children: [
             Positioned.fill(
               child: IgnorePointer(
-                child: Opacity(
-                  opacity: 0.7,
-                  child: Image.asset('lib/assets/bg.png', fit: BoxFit.cover),
-                ),
+                child: Image.asset('assets/bg.png', fit: BoxFit.cover),
+              ),
+            ),
+            BackdropFilter(
+              filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
               ),
             ),
             if (_locationError != null)
@@ -244,14 +251,16 @@ class _HomePageState extends State<HomePage> {
                 left: 0,
                 right: 0,
                 child: Container(
-                  color: Colors.white,
-                  child: ListView.builder(
+                  color: Colors.orange[200],
+                  child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: _searchResults.length,
+                    separatorBuilder: (context, index) => Divider(),
                     itemBuilder: (context, index) {
                       final city = _searchResults[index];
 
                       return ListTile(
+                        leading: const Icon(Icons.location_city),
                         title: Text(city.city),
                         subtitle: Text('${city.region}, ${city.country}'),
                         onTap: () => _selectCity(city),

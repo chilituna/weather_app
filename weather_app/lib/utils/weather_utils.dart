@@ -40,3 +40,24 @@ String getWeatherDescription(int weatherCode) {
       return 'Unknown weather code: $weatherCode';
   }
 }
+
+
+String getWeatherAnimation(int weatherCode) {
+  if (weatherCode == 0) {
+    return 'assets/animations/sunny.json';
+  } else if (weatherCode >= 1 && weatherCode <= 3) {
+    return 'assets/animations/partly_cloudy.json';
+  } else if (weatherCode == 45 || weatherCode == 48) {
+    return 'assets/animations/fog.json';
+  } else if (weatherCode >= 51 && weatherCode <= 67) {
+    return 'assets/animations/rain.json';
+  } else if (weatherCode >= 71 && weatherCode <= 77) {
+    return 'assets/animations/snow.json';
+  } else if (weatherCode >= 80 && weatherCode <= 82) {
+    return 'assets/animations/rain.json';
+  } else if (weatherCode >= 85 && weatherCode <= 86) {
+    return 'assets/animations/snow_showers.json';
+  } else {
+    return 'assets/animations/partly_cloudy.json'; // default animation for unknown codes
+  }
+}
