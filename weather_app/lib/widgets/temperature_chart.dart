@@ -113,7 +113,7 @@ class TemperatureChart extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Text(
-                  'Today temperatures',
+                  'Today\'s temperatures',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
