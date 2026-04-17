@@ -29,16 +29,36 @@ class _TodayState extends State<Today> {
 
   @override
   Widget build(BuildContext context) {
-    // today's weather is the hourly weather for the current day, from 0:00 to 23:00
-    final today = DateTime.now();
-    final todayHours = (widget.hourlyWeather ?? [])
-        .where(
-          (h) =>
-              h.time.year == today.year &&
-              h.time.month == today.month &&
-              h.time.day == today.day,
-        )
-        .toList();
+    // today's weather is the hourly weather for the current day in the location's timezone
+    // We extract the date part from each timestamp and find all entries from the earliest date
+    if (widget.hourlyWeather == null || widget.hourlyWeather!.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Get the date of the first hourly entry (represents "today" in the location)
+    final firstDate = widget.hourlyWeather!.first.time;
+    final todayDateStr =
+        '${firstDate.year.toString().padLeft(4, '0')}-${firstDate.month.toString().padLeft(2, '0')}-${firstDate.day.toString().padLeft(2, '0')}';
+
+    final todayHours = widget.hourlyWeather!.where((h) {
+      final hourDateStr =
+          '${h.time.year.toString().padLeft(4, '0')}-${h.time.month.toString().padLeft(2, '0')}-${h.time.day.toString().padLeft(2, '0')}';
+      return hourDateStr == todayDateStr;
+    }).toList();
+
+    final nextMidnight = widget.hourlyWeather!.cast<HourlyWeather?>().firstWhere(
+      (h) =>
+          h != null &&
+          h.time.hour == 0 &&
+          '${h.time.year.toString().padLeft(4, '0')}-${h.time.month.toString().padLeft(2, '0')}-${h.time.day.toString().padLeft(2, '0')}' !=
+              todayDateStr,
+      orElse: () => null,
+    );
+
+    final chartHours = <HourlyWeather>[
+      ...todayHours,
+      if (nextMidnight != null) nextMidnight,
+    ];
 
     if (todayHours.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -91,7 +111,7 @@ class _TodayState extends State<Today> {
               height: 280,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: TemperatureChart(hours: todayHours),
+                child: TemperatureChart(hours: chartHours),
               ),
             ),
 

@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../models/hourly_weather.dart';
 
-class TemperatureChart extends StatefulWidget {
+class TemperatureChart extends StatelessWidget {
   final List<HourlyWeather> hours;
 
   const TemperatureChart({super.key, required this.hours});
-
-  @override
-  State<TemperatureChart> createState() => _TemperatureChartState();
-}
-
-class _TemperatureChartState extends State<TemperatureChart> {
   static const double _tempBuffer = 2.0;
   static const double _yAxisInterval = 2.0;
-  static const int _stepsPerSegment = 5;
+  static const double _xAxisInterval = 3.0;
 
   static const List<double> _tempStops = [
     -25.0,
@@ -36,65 +30,6 @@ class _TemperatureChartState extends State<TemperatureChart> {
     Colors.red.shade900,
   ];
 
-  List<HourlyWeather>? _lastHoursRef;
-  List<LineChartBarData> _cachedBars = <LineChartBarData>[];
-  double _cachedMinY = 0;
-  double _cachedMaxY = 0;
-  double _cachedMaxX = 0;
-  bool _hasData = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _recomputeChartData(force: true);
-  }
-
-  @override
-  void didUpdateWidget(covariant TemperatureChart oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _recomputeChartData();
-  }
-
-  void _recomputeChartData({bool force = false}) {
-    if (!force && identical(_lastHoursRef, widget.hours)) {
-      return;
-    }
-
-    _lastHoursRef = widget.hours;
-    final hours = widget.hours;
-
-    if (hours.isEmpty) {
-      _hasData = false;
-      _cachedBars = <LineChartBarData>[];
-      _cachedMinY = 0;
-      _cachedMaxY = 0;
-      _cachedMaxX = 0;
-      return;
-    }
-
-    _hasData = true;
-    _cachedMaxX = (hours.length - 1).toDouble();
-
-    double rawMin = hours.first.temperature;
-    double rawMax = hours.first.temperature;
-
-    for (int i = 1; i < hours.length; i++) {
-      final temp = hours[i].temperature;
-      if (temp < rawMin) {
-        rawMin = temp;
-      }
-      if (temp > rawMax) {
-        rawMax = temp;
-      }
-    }
-
-    final bufferedMin = rawMin - _tempBuffer;
-    final bufferedMax = rawMax + _tempBuffer;
-    _cachedMinY = (bufferedMin / 2).floorToDouble() * 2;
-    _cachedMaxY = (bufferedMax / 2).ceilToDouble() * 2;
-    _cachedBars = _buildGradientBars(hours);
-  }
-
   static Color _getColorForTemp(double temp) {
     temp = temp.clamp(_tempStops.first, _tempStops.last);
 
@@ -111,47 +46,58 @@ class _TemperatureChartState extends State<TemperatureChart> {
     return _tempColors.last;
   }
 
-  List<LineChartBarData> _buildGradientBars(List<HourlyWeather> hours) {
-    final bars = <LineChartBarData>[];
-    final invSteps = 1.0 / _stepsPerSegment;
+  static List<LineChartBarData> _buildLineChart(List<HourlyWeather> hours) {
+    final spots = <FlSpot>[];
+    final first = hours.first.time;
+    final firstDateStr =
+        '${first.year.toString().padLeft(4, '0')}-${first.month.toString().padLeft(2, '0')}-${first.day.toString().padLeft(2, '0')}';
 
-    for (int i = 0; i < hours.length - 1; i++) {
-      final t1 = hours[i].temperature;
-      final t2 = hours[i + 1].temperature;
-
-      for (int s = 0; s < _stepsPerSegment; s++) {
-        final t = s * invSteps;
-        final tNext = (s + 1) * invSteps;
-
-        final tempA = t1 + (t2 - t1) * t;
-        final tempB = t1 + (t2 - t1) * tNext;
-        final xA = i + t;
-        final xB = i + tNext;
-
-        final colorA = _getColorForTemp(tempA);
-        final colorB = _getColorForTemp(tempB);
-
-        bars.add(
-          LineChartBarData(
-            spots: [FlSpot(xA, tempA), FlSpot(xB, tempB)],
-            isCurved: false,
-            barWidth: 3,
-            dotData: FlDotData(show: false),
-            gradient: LinearGradient(colors: [colorA, colorB]),
-          ),
-        );
-      }
+    for (int i = 0; i < hours.length; i++) {
+      final time = hours[i].time;
+      final dateStr =
+          '${time.year.toString().padLeft(4, '0')}-${time.month.toString().padLeft(2, '0')}-${time.day.toString().padLeft(2, '0')}';
+      final x = dateStr == firstDateStr ? time.hour.toDouble() : 24.0;
+      spots.add(FlSpot(x, hours[i].temperature));
     }
 
-    return bars;
+    return [
+      LineChartBarData(
+        spots: spots,
+        isCurved: false,
+        barWidth: 2,
+        color: Colors.amber,
+        dotData: FlDotData(show: false),
+      ),
+    ];
+  }
+
+  static FlLine _getGridLineForTemp(double temp) {
+    final color = _getColorForTemp(temp);
+    return FlLine(color: color.withOpacity(0.5), strokeWidth: 1);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_hasData) {
+    if (hours.isEmpty) {
       return const SizedBox();
     }
-    final hours = widget.hours;
+
+    // Calculate temperature range
+    double rawMin = hours.first.temperature;
+    double rawMax = hours.first.temperature;
+
+    for (int i = 1; i < hours.length; i++) {
+      final temp = hours[i].temperature;
+      if (temp < rawMin) rawMin = temp;
+      if (temp > rawMax) rawMax = temp;
+    }
+
+    final bufferedMin = rawMin - _tempBuffer;
+    final bufferedMax = rawMax + _tempBuffer;
+    final minY = (bufferedMin / 2).floorToDouble() * 2;
+    final maxY = (bufferedMax / 2).ceilToDouble() * 2;
+    const minX = 0.0;
+    const maxX = 24.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -160,7 +106,7 @@ class _TemperatureChartState extends State<TemperatureChart> {
           child: Container(
             padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
             decoration: BoxDecoration(
-              color: const Color.fromRGBO(0, 0, 0, 0.35),
+              color: Colors.black.withOpacity(0.35),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Column(
@@ -177,13 +123,23 @@ class _TemperatureChartState extends State<TemperatureChart> {
                     child: IgnorePointer(
                       child: LineChart(
                         LineChartData(
-                          minX: 0,
-                          maxX: _cachedMaxX,
-                          minY: _cachedMinY,
-                          maxY: _cachedMaxY,
+                          minX: minX,
+                          maxX: maxX,
+                          minY: minY,
+                          maxY: maxY,
                           gridData: FlGridData(
                             show: true,
                             horizontalInterval: _yAxisInterval,
+                            verticalInterval: _xAxisInterval,
+                            getDrawingHorizontalLine: (value) {
+                              return _getGridLineForTemp(value);
+                            },
+                            getDrawingVerticalLine: (value) {
+                              return FlLine(
+                                color: Colors.white.withOpacity(0.18),
+                                strokeWidth: 1,
+                              );
+                            },
                           ),
                           borderData: FlBorderData(show: false),
 
@@ -191,14 +147,13 @@ class _TemperatureChartState extends State<TemperatureChart> {
                             bottomTitles: AxisTitles(
                               sideTitles: SideTitles(
                                 showTitles: true,
-                                interval: 3,
+                                interval: _xAxisInterval,
                                 getTitlesWidget: (value, meta) {
-                                  final index = value.toInt();
-                                  if (index < 0 || index >= hours.length) {
+                                  if (value < minX || value > maxX) {
                                     return const SizedBox();
                                   }
 
-                                  final hour = hours[index].time.hour;
+                                  final hour = value.toInt();
 
                                   return Text(
                                     '${hour.toString().padLeft(2, '0')}',
@@ -236,7 +191,7 @@ class _TemperatureChartState extends State<TemperatureChart> {
                               sideTitles: SideTitles(showTitles: false),
                             ),
                           ),
-                          lineBarsData: _cachedBars,
+                          lineBarsData: _buildLineChart(hours),
                         ),
                       ),
                     ),

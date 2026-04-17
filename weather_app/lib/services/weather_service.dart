@@ -7,7 +7,6 @@ import '../models/hourly_weather.dart';
 import '../models/daily_weather.dart';
 
 class WeatherService {
-
   Future<
     ({
       CurrentWeather? currentWeather,
