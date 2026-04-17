@@ -255,7 +255,10 @@ class _HomePageState extends State<HomePage> {
                   child: ListView.separated(
                     shrinkWrap: true,
                     itemCount: _searchResults.length,
-                    separatorBuilder: (context, index) => Divider(),
+                    separatorBuilder: (context, index) => const Divider(
+                      height: 1,
+                      color: Colors.orangeAccent,   
+                    ),
                     itemBuilder: (context, index) {
                       final city = _searchResults[index];
 
@@ -272,6 +275,8 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         bottomNavigationBar: const TabBar(
+          labelColor: Colors.orangeAccent,
+          indicatorColor: Colors.orangeAccent,
           tabs: [
             Tab(icon: Icon(Icons.cloud), text: 'Currently'),
             Tab(icon: Icon(Icons.today), text: 'Today'),
