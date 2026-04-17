@@ -9,7 +9,6 @@ class TemperatureChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     if (hours.isEmpty) {
       return const SizedBox();
     }
