@@ -71,7 +71,7 @@ class Today extends StatelessWidget {
               ),
             ],
 
-             const SizedBox(height: 24),
+            const SizedBox(height: 24),
 
             // Temperature Chart
             SizedBox(
@@ -102,6 +102,7 @@ class Today extends StatelessWidget {
                           '${hour.time.hour.toString().padLeft(2, '0')}:00',
                           style: const TextStyle(color: Colors.white),
                         ),
+                        getWeatherIcon(hour.weatherCode, size: 40),
                         const SizedBox(height: 8),
                         Text(
                           '${hour.temperature.toStringAsFixed(0)}°',
