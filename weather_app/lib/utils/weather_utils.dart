@@ -49,15 +49,13 @@ String getWeatherAnimation(int weatherCode) {
     return 'assets/animations/partly_cloudy.json';
   } else if (weatherCode == 45 || weatherCode == 48) {
     return 'assets/animations/fog.json';
-  } else if (weatherCode >= 51 && weatherCode <= 67) {
+  } else if ((weatherCode >= 51 && weatherCode <= 67) || weatherCode >= 80 && weatherCode <= 82) {
     return 'assets/animations/rain.json';
-  } else if (weatherCode >= 71 && weatherCode <= 77) {
+  } else if ((weatherCode >= 71 && weatherCode <= 77) || weatherCode >= 85 && weatherCode <= 86) {
     return 'assets/animations/snow.json';
-  } else if (weatherCode >= 80 && weatherCode <= 82) {
-    return 'assets/animations/rain.json';
-  } else if (weatherCode >= 85 && weatherCode <= 86) {
-    return 'assets/animations/snow_showers.json';
   } else {
     return 'assets/animations/partly_cloudy.json'; // default animation for unknown codes
   }
 }
+
+// Get icons from Icons library for weather codes

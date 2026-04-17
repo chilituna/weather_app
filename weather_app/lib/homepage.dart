@@ -224,7 +224,7 @@ class _HomePageState extends State<HomePage> {
                   child: Text(
                     _locationError!,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.red, fontSize: 16),
+                    style: const TextStyle(color: Colors.black, fontSize: 16),
                   ),
                 ),
               )
@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: _searchResults.length,
                     separatorBuilder: (context, index) => const Divider(
                       height: 1,
-                      color: Colors.orangeAccent,   
+                      color: Colors.orangeAccent,
                     ),
                     itemBuilder: (context, index) {
                       final city = _searchResults[index];
