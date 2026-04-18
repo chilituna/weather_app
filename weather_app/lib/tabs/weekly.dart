@@ -94,10 +94,13 @@ class _WeeklyState extends State<Weekly> {
                 child: DailyTemperatureChart(days: next7Days),
               ),
             ),
-            const SizedBox(height: 20),
+            
+            const SizedBox(height: 30),
+
+            // Scrollable list of daily forecasts
             Container(
               width: double.infinity,
-              height: 165,
+              height: 160,
               color: const Color.fromRGBO(0, 0, 0, 0.35),
               child: ScrollbarTheme(
                 data: const ScrollbarThemeData(

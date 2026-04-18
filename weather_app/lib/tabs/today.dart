@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../models/daily_weather.dart';
 import '../models/hourly_weather.dart';
 import '../models/location.dart';
 import '../utils/weather_utils.dart';
@@ -7,11 +8,13 @@ import '../widgets/temperature_chart.dart';
 class Today extends StatefulWidget {
   final LocationData? locationData;
   final List<HourlyWeather>? hourlyWeather;
+  final List<DailyWeather>? dailyWeather;
 
   const Today({
     super.key,
     required this.locationData,
     required this.hourlyWeather,
+    required this.dailyWeather,
   });
 
   @override
@@ -60,8 +63,25 @@ class _TodayState extends State<Today> {
       if (nextMidnight != null) nextMidnight,
     ];
 
+    final todayDaily = widget.dailyWeather == null
+        ? null
+        : widget.dailyWeather!.cast<DailyWeather?>().firstWhere(
+            (day) =>
+                day != null &&
+                day.date.year == firstDate.year &&
+                day.date.month == firstDate.month &&
+                day.date.day == firstDate.day,
+            orElse: () => null,
+          );
+
     if (todayHours.isEmpty) {
       return const Center(child: CircularProgressIndicator());
+    }
+
+    String formatTime(DateTime time) {
+      final hours = time.hour.toString().padLeft(2, '0');
+      final minutes = time.minute.toString().padLeft(2, '0');
+      return '$hours:$minutes';
     }
 
     return SafeArea(
@@ -74,7 +94,6 @@ class _TodayState extends State<Today> {
             // Location + title
             if (widget.locationData != null) ...[
               const SizedBox(height: 8),
-
               Align(
                 alignment: Alignment.center,
                 child: Column(
@@ -88,9 +107,7 @@ class _TodayState extends State<Today> {
                         color: Colors.white,
                       ),
                     ),
-
                     const SizedBox(height: 4),
-
                     Text(
                       '${widget.locationData!.region}, ${widget.locationData!.country}',
                       textAlign: TextAlign.center,
@@ -117,7 +134,7 @@ class _TodayState extends State<Today> {
 
             const SizedBox(height: 30),
 
-            // ↔️ Horizontal hourly list
+            // Horizontal hourly list
             Container(
               width: double.infinity,
               height: 160,
@@ -155,7 +172,11 @@ class _TodayState extends State<Today> {
                               style: const TextStyle(color: Colors.white),
                             ),
                             const SizedBox(height: 10),
-                            getWeatherIcon(hour.weatherCode, size: 40),
+                            getWeatherIcon(
+                              hour.weatherCode,
+                              size: 40,
+                              isDay: hour.isDay,
+                            ),
                             const SizedBox(height: 8),
                             Text(
                               '${hour.temperature.toStringAsFixed(0)}°C',
@@ -165,8 +186,6 @@ class _TodayState extends State<Today> {
                               ),
                             ),
                             const SizedBox(height: 4),
-
-                            // Wind
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               mainAxisSize: MainAxisSize.min,
@@ -194,6 +213,58 @@ class _TodayState extends State<Today> {
                 ),
               ),
             ),
+
+            const SizedBox(height: 16),
+
+            if (todayDaily != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.wb_sunny,
+                          color: Color(0xFFFFB300),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Sunrise: ${formatTime(todayDaily.sunrise)}',
+                          style: const TextStyle(
+                            color: Color(0xFFFFE082),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.nightlight_round,
+                          color: Color(0xFFFF7043),
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Sunset: ${formatTime(todayDaily.sunset)}',
+                          style: const TextStyle(
+                            color: Color(0xFFFFAB91),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
             const SizedBox(height: 10),
           ],
         ),

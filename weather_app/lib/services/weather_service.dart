@@ -21,8 +21,8 @@ class WeatherService {
         '?latitude=$lat'
         '&longitude=$lon'
         '&current_weather=true'
-        '&hourly=temperature_2m,weathercode,windspeed_10m'
-        '&daily=temperature_2m_max,temperature_2m_min,'
+        '&hourly=temperature_2m,weathercode,windspeed_10m,is_day'
+        '&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,'
         'weathercode,windspeed_10m_max&timezone=auto',
       ),
     );
@@ -38,6 +38,7 @@ class WeatherService {
       temperature: data['current_weather']['temperature'].toDouble(),
       windSpeed: data['current_weather']['windspeed'].toDouble(),
       weatherCode: data['current_weather']['weathercode'],
+      isDay: data['current_weather']['is_day'] == 1,
     );
 
     // HOURLY
@@ -45,6 +46,7 @@ class WeatherService {
     final List temps = data['hourly']['temperature_2m'];
     final List codes = data['hourly']['weathercode'];
     final List winds = data['hourly']['windspeed_10m'];
+    final List hourlyIsDay = data['hourly']['is_day'];
 
     final hourly = List.generate(times.length, (i) {
       return HourlyWeather(
@@ -52,6 +54,7 @@ class WeatherService {
         temperature: temps[i].toDouble(),
         weatherCode: codes[i],
         windSpeed: winds[i].toDouble(),
+        isDay: hourlyIsDay[i] == 1,
       );
     });
 
@@ -60,6 +63,8 @@ class WeatherService {
     final List minTemps = data['daily']['temperature_2m_min'];
     final List maxTemps = data['daily']['temperature_2m_max'];
     final List dailyCodes = data['daily']['weathercode'];
+    final List sunrises = data['daily']['sunrise'];
+    final List sunsets = data['daily']['sunset'];
 
     final daily = List.generate(dates.length, (i) {
       return DailyWeather(
@@ -67,6 +72,8 @@ class WeatherService {
         minTemp: minTemps[i].toDouble(),
         maxTemp: maxTemps[i].toDouble(),
         weatherCode: dailyCodes[i],
+        sunrise: DateTime.parse(sunrises[i]),
+        sunset: DateTime.parse(sunsets[i]),
       );
     });
 

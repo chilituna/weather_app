@@ -59,7 +59,10 @@ class Currently extends StatelessWidget {
 
                       // Animation
                       lottie.LottieBuilder.asset(
-                        getWeatherAnimation(currentWeather!.weatherCode),
+                        getWeatherAnimation(
+                          currentWeather!.weatherCode,
+                          isDay: currentWeather!.isDay,
+                        ),
                         width: 250,
                         height: 250,
                       ),

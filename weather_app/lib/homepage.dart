@@ -243,6 +243,7 @@ class _HomePageState extends State<HomePage> {
                   Today(
                     locationData: _locationData,
                     hourlyWeather: _hourlyWeather,
+                    dailyWeather: _dailyWeather,
                   ),
                   Weekly(
                     locationData: _locationData,

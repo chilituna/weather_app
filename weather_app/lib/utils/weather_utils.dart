@@ -49,11 +49,13 @@ String getWeatherDescription(int weatherCode) {
 }
 
 
-String getWeatherAnimation(int weatherCode) {
+String getWeatherAnimation(int weatherCode, {bool isDay = true}) {
   if (weatherCode == 0) {
-    return 'assets/animations/sunny.json';
+    return isDay ? 'assets/animations/sunny.json' : 'assets/animations/moon.json';
   } else if (weatherCode >= 1 && weatherCode <= 2) {
-    return 'assets/animations/partly_cloudy.json';
+    return isDay
+        ? 'assets/animations/partly_cloudy.json'
+        : 'assets/animations/moon_cloud.json';
   } else if (weatherCode == 3) {
     return 'assets/animations/cloudy.json';
   } else if (weatherCode == 45 || weatherCode == 48) {
@@ -109,12 +111,55 @@ class PartlyCloudyIcon extends StatelessWidget {
   }
 }
 
+class PartlyCloudyNightIcon extends StatelessWidget {
+  final double size;
+
+  const PartlyCloudyNightIcon({super.key, this.size = 32});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: size * 0.08,
+            left: size * 0.08,
+            child: Icon(
+              Icons.nightlight_round,
+              color: const Color(0xFFFFF59D),
+              size: size * 0.65,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: Icon(
+              Icons.cloud,
+              color: const Color.fromARGB(255, 182, 213, 228),
+              size: size * 0.75,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 // Get icons from Icons library for weather codes
-Widget getWeatherIcon(int weatherCode, {double size = 32}) {
+Widget getWeatherIcon(int weatherCode, {double size = 32, bool isDay = true}) {
   if (weatherCode == 0) {
-    return Icon(Icons.wb_sunny, size: size, color: Colors.amber);
+    return Icon(
+      isDay ? Icons.wb_sunny : Icons.nightlight_round,
+      size: size,
+      color: isDay ? Colors.amber : const Color(0xFFFFF59D),
+    );
   } else if (weatherCode >= 1 && weatherCode <= 2) {
-    return PartlyCloudyIcon(size: size); // ✅ now valid
+    return isDay
+        ? PartlyCloudyIcon(size: size)
+        : PartlyCloudyNightIcon(size: size);
   } else if (weatherCode == 3) {
     return Icon(Icons.cloud, size: size, color: const Color.fromARGB(255, 160, 202, 221));
   } else if (weatherCode == 45 || weatherCode == 48) {

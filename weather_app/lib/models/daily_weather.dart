@@ -5,11 +5,15 @@ class DailyWeather {
   final double minTemp; // in celsius
   final double maxTemp; // in celsius
   final int weatherCode; // Open-Meteo weather code
+  final DateTime sunrise;
+  final DateTime sunset;
 
   DailyWeather({
     required this.date,
     required this.minTemp,
     required this.maxTemp,
     required this.weatherCode,
+    required this.sunrise,
+    required this.sunset,
   });
 }
