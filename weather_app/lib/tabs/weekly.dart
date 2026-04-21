@@ -94,70 +94,76 @@ class _WeeklyState extends State<Weekly> {
                 child: DailyTemperatureChart(days: next7Days),
               ),
             ),
-            
+
             const SizedBox(height: 30),
 
             // Scrollable list of daily forecasts
-            Container(
-              width: double.infinity,
-              height: 160,
-              color: const Color.fromRGBO(0, 0, 0, 0.35),
-              child: ScrollbarTheme(
-                data: const ScrollbarThemeData(
-                  thumbColor: MaterialStatePropertyAll(Colors.orange),
-                  trackColor: MaterialStatePropertyAll(Colors.transparent),
-                  trackBorderColor: MaterialStatePropertyAll(
-                    Colors.transparent,
-                  ),
-                  thickness: MaterialStatePropertyAll(6),
-                  radius: Radius.zero,
-                  crossAxisMargin: 0,
-                  mainAxisMargin: 6,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                height: 160,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(0, 0, 0, 0.35),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                child: Scrollbar(
-                  controller: _weeklyScrollController,
-                  thumbVisibility: true,
-                  child: ListView.builder(
+                child: ScrollbarTheme(
+                  data: const ScrollbarThemeData(
+                    thumbColor: MaterialStatePropertyAll(Colors.orange),
+                    trackColor: MaterialStatePropertyAll(Colors.transparent),
+                    trackBorderColor: MaterialStatePropertyAll(
+                      Colors.transparent,
+                    ),
+                    thickness: MaterialStatePropertyAll(6),
+                    radius: Radius.zero,
+                    crossAxisMargin: 0,
+                    mainAxisMargin: 6,
+                  ),
+                  child: Scrollbar(
                     controller: _weeklyScrollController,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: next7Days.length,
-                    itemExtent: 150,
-                    itemBuilder: (context, index) {
-                      final day = next7Days[index];
+                    thumbVisibility: true,
+                    child: ListView.builder(
+                      controller: _weeklyScrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: next7Days.length,
+                      itemExtent: 150,
+                      itemBuilder: (context, index) {
+                        final day = next7Days[index];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              _formatDate(day.date),
-                              style: const TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 10),
-                            getWeatherIcon(day.weatherCode, size: 38),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Max ${day.maxTemp.toStringAsFixed(0)}°C',
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 255, 151, 82),
-                                fontSize: 14,
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                _formatDate(day.date),
+                                style: const TextStyle(color: Colors.white),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'Min ${day.minTemp.toStringAsFixed(0)}°C',
-                              style: const TextStyle(
-                                color: Colors.lightBlueAccent,
-                                fontSize: 14,
+                              const SizedBox(height: 10),
+                              getWeatherIcon(day.weatherCode, size: 38),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Max ${day.maxTemp.toStringAsFixed(0)}°C',
+                                style: const TextStyle(
+                                  color: Color.fromARGB(255, 255, 151, 82),
+                                  fontSize: 14,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                          ],
-                        ),
-                      );
-                    },
+                              const SizedBox(height: 2),
+                              Text(
+                                'Min ${day.minTemp.toStringAsFixed(0)}°C',
+                                style: const TextStyle(
+                                  color: Colors.lightBlueAccent,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

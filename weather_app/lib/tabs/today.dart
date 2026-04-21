@@ -135,80 +135,86 @@ class _TodayState extends State<Today> {
             const SizedBox(height: 30),
 
             // Horizontal hourly list
-            Container(
-              width: double.infinity,
-              height: 160,
-              color: const Color.fromRGBO(0, 0, 0, 0.35),
-              child: ScrollbarTheme(
-                data: const ScrollbarThemeData(
-                  thumbColor: MaterialStatePropertyAll(Colors.orange),
-                  trackColor: MaterialStatePropertyAll(Colors.transparent),
-                  trackBorderColor: MaterialStatePropertyAll(
-                    Colors.transparent,
-                  ),
-                  thickness: MaterialStatePropertyAll(6),
-                  radius: Radius.zero,
-                  crossAxisMargin: 0,
-                  mainAxisMargin: 6,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                height: 160,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  color: const Color.fromRGBO(0, 0, 0, 0.35),
+                  borderRadius: BorderRadius.circular(16),
                 ),
-                child: Scrollbar(
-                  controller: _hourlyScrollController,
-                  thumbVisibility: true,
-                  child: ListView.builder(
+                child: ScrollbarTheme(
+                  data: const ScrollbarThemeData(
+                    thumbColor: MaterialStatePropertyAll(Colors.orange),
+                    trackColor: MaterialStatePropertyAll(Colors.transparent),
+                    trackBorderColor: MaterialStatePropertyAll(
+                      Colors.transparent,
+                    ),
+                    thickness: MaterialStatePropertyAll(6),
+                    radius: Radius.zero,
+                    crossAxisMargin: 0,
+                    mainAxisMargin: 6,
+                  ),
+                  child: Scrollbar(
                     controller: _hourlyScrollController,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: todayHours.length,
-                    itemExtent: 120,
-                    itemBuilder: (context, index) {
-                      final hour = todayHours[index];
+                    thumbVisibility: true,
+                    child: ListView.builder(
+                      controller: _hourlyScrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: todayHours.length,
+                      itemExtent: 120,
+                      itemBuilder: (context, index) {
+                        final hour = todayHours[index];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${hour.time.hour.toString().padLeft(2, '0')}:00',
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            const SizedBox(height: 10),
-                            getWeatherIcon(
-                              hour.weatherCode,
-                              size: 40,
-                              isDay: hour.isDay,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${hour.temperature.toStringAsFixed(0)}°C',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${hour.time.hour.toString().padLeft(2, '0')}:00',
+                                style: const TextStyle(color: Colors.white),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.air,
-                                  color: Colors.white70,
-                                  size: 16,
+                              const SizedBox(height: 10),
+                              getWeatherIcon(
+                                hour.weatherCode,
+                                size: 40,
+                                isDay: hour.isDay,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '${hour.temperature.toStringAsFixed(0)}°C',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
                                 ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${hour.windSpeed} km/h',
-                                  style: const TextStyle(
-                                    fontSize: 14,
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(
+                                    Icons.air,
                                     color: Colors.white70,
+                                    size: 16,
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '${hour.windSpeed} km/h',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.white70,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
