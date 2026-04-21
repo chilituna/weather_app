@@ -1,10 +1,9 @@
-# 1. Project Title
+![Weather App banner](demo/banner_weatherapp.png)
 
-## Weather App
 
 A cross-platform Flutter weather application that provides current conditions, hourly trends, and a 7-day forecast using live geolocation and city search.
 
-## 2. Overview
+## 📋 Overview
 
 This project was built to practice end-to-end mobile application development with real-world API integration and clean UI architecture.
 
@@ -16,7 +15,7 @@ Why I built it:
 - To implement a modular architecture with clear separation between data services, models, and presentation
 - To ship a polished, multi-platform project suitable for a professional portfolio
 
-## 3. Demo / Screenshots
+## 📸 Demo / Screenshots
 
 ### App Demo (Screen Recording)
 
@@ -32,7 +31,7 @@ Why I built it:
 	</tr>
 </table>
 
-## 4. Tech Stack
+## 🛠️ Tech Stack
 
 - Language: Dart
 - Framework: Flutter
@@ -44,7 +43,7 @@ Why I built it:
 - Linting / Code Quality: `flutter_lints`
 - Platforms: Android, iOS, Web, Windows, macOS, Linux
 
-## 5. Architecture / Implementation
+## 🏗️ Architecture / Implementation
 
 The app follows a modular, separation-of-concerns architecture:
 
@@ -66,7 +65,7 @@ Key technical decisions:
 - Lightweight state management using `StatefulWidget`, appropriate for current app complexity
 - Clear error-to-user message conversion for network and permission failure scenarios
 
-## 6. Features
+## ✨ Features
 
 - Current weather view with animated weather conditions
 - Automatic location detection via device GPS (with permission handling)
@@ -76,7 +75,7 @@ Key technical decisions:
 - Weather condition icons and human-readable descriptions
 - Cross-platform Flutter support from one codebase
 
-## 7. Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -122,7 +121,7 @@ Optional quality checks
 flutter analyze
 ```
 
-## 8. Project Structure
+## 📂 Project Structure
 
 ```text
 weather_app/
@@ -144,7 +143,7 @@ weather_app/
 		└── [platform folders]
 ```
 
-## 9. Future Improvements
+## 🎯 Future Improvements
 
 - Add persistent search history and favorite locations
 - Improve offline behavior with cached latest forecast
@@ -152,7 +151,7 @@ weather_app/
 - Add severe weather alerts and notification support
 - Add localization for multiple languages
 
-## 10. What I Learned
+## 📚 What I Learned
 
 This project helped me practice:
 
@@ -162,13 +161,10 @@ This project helped me practice:
 - Building custom, data-driven weather visualizations with charts and animations
 - Designing a responsive, multi-tab user experience across multiple platforms
 
-## 11. MIT Licence for Alise Arponen
+## 📄 License
 
-This project is licensed under the MIT Licence.
+This project is licensed under the [MIT Licence](LICENSE).
 
-- Licence holder: Alise Arponen
-- Licence file: `LICENSE`
-
-## 12. Acknowledgments
+## 🤝 Acknowledgments
 
 - Developed with assistance from GitHub Copilot to improve productivity, speed up iteration, and ship features faster.
