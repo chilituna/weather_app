@@ -27,6 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String? _locationError;
+  bool _isLocationLoading = false;
 
   LocationData? _locationData;
   CurrentWeather? _currentWeather;
@@ -118,6 +119,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _getLocation() async {
     setState(() {
       _locationError = null;
+      _isLocationLoading = true;
     });
 
     try {
@@ -137,6 +139,7 @@ class _HomePageState extends State<HomePage> {
         _currentWeather = weatherData.currentWeather;
         _hourlyWeather = weatherData.hourlyWeather;
         _dailyWeather = weatherData.dailyWeather;
+        _isLocationLoading = false;
       });
     } catch (e) {
       setState(() {
@@ -149,6 +152,8 @@ class _HomePageState extends State<HomePage> {
         } else {
           _locationError = message;
         }
+
+        _isLocationLoading = false;
       });
     }
   }
@@ -207,7 +212,10 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           actions: [
-            IconButton(icon: Icon(Icons.my_location), onPressed: _getLocation),
+            IconButton(
+              icon: const Icon(Icons.my_location),
+              onPressed: _isLocationLoading ? null : _getLocation,
+            ),
           ],
           backgroundColor: const Color.fromARGB(255, 247, 179, 90),
         ),
@@ -222,7 +230,9 @@ class _HomePageState extends State<HomePage> {
               filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
               child: Container(color: Colors.black.withOpacity(0.5)),
             ),
-            if (_locationError != null)
+            if (_isLocationLoading)
+              const Center(child: CircularProgressIndicator())
+            else if (_locationError != null)
               Center(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),

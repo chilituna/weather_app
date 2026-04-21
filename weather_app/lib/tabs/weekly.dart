@@ -126,7 +126,7 @@ class _WeeklyState extends State<Weekly> {
                       controller: _weeklyScrollController,
                       scrollDirection: Axis.horizontal,
                       itemCount: next7Days.length,
-                      itemExtent: 150,
+                      itemExtent: 120,
                       itemBuilder: (context, index) {
                         final day = next7Days[index];
 
